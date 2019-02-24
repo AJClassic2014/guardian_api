@@ -21,56 +21,110 @@ const styles = theme => ({
   },
 });
 
+function groupBySection(data) {
+  let results=[];
+  let section = {};
+  data.map( item => {
+    if(!section[item.sectionId])//if section id is not found in section group, insert it
+    { 
+      section[item.sectionId] = item.sectionId;
+      results.push(
+        {
+          id: item.id,
+          title: item.webTitle, 
+          link: item.webUrl, 
+          date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
+          section: item.sectionId  
+        }
+        );
+    }
+    else //if section id already existing, find the position of new item by comparing section id
+    {
+      for(let i = 0; i < results.length; i++){
+         if(results[i].section === item.sectionId){
+          results.splice(
+            i+1, 
+            0, 
+            {
+              id: item.id,
+              title: item.webTitle, 
+              link: item.webUrl, 
+              date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
+              section: item.sectionId  
+            }
+            );
+          break;
+         }
+      }
+    }
+  });
+  return results;
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      userTypes: "",
       results : [],
-      currentPage : 1,
+      currentPage : 0,
+      allPages : 0,
+      total: 0,
     };
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.handleUserTypes = this.handleUserTypes.bind(this);
+    this.handlePage = this.handlePage.bind(this);
+    //this.handlePageDown = this.handlePageDown.bind(this);
   }
+
+  handleUserTypes = event => {
+    this.setState({ userTypes: event.target.value });
+  };
+
+  handlePage = (currentPage) => {
+    if(currentPage>=1)
+    { 
+      axios.get(`https://content.guardianapis.com/search?page=${currentPage}&q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
+      .then( ({data : {response}}) => {
+        let results = groupBySection(response.results);
+        this.setState({ results: [...results] });
+      })
+      .catch( error => {
+        console.log(error);
+      });
+    }
+    this.setState({ currentPage: currentPage });
+  };
+
+  // handlePageDown = (currentPage) => {
+  //   this.setState({ currentPage: currentPage - 1 });
+  // };
+
+  handleSearch = () => {
+    if (this.state.userTypes.length !== 0)
+    {
+      axios.get(`https://content.guardianapis.com/search?q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
+      .then( ({data : {response}}) => {
+        let results = groupBySection(response.results);
+        this.setState({ results: [...results] });
+      })
+      .catch( error => {
+        console.log(error);
+      });
+    }
+  };
   
   componentDidMount = () => {
-  let results = [];
-  let section = {};
   axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
   .then( ({data : {response}}) => {
-    response.results.map( item => {
-      if(!section[item.sectionId])//if section id is not found in section group, insert it
-      { 
-        section[item.sectionId] = item.sectionId;
-        results.push(
-          {
-            id: item.id,
-            title: item.webTitle, 
-            link: item.webUrl, 
-            date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
-            section: item.sectionId  
-          }
-          );
-      }
-      else //if section id already existing, find the position of new item by comparing section id
-      {
-        for(let i = 0; i < results.length; i++){
-           if(results[i].section === item.sectionId){
-            results.splice(
-              i+1, 
-              0, 
-              {
-                id: item.id,
-                title: item.webTitle, 
-                link: item.webUrl, 
-                date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
-                section: item.sectionId  
-              }
-              );
-            break;
-           }
-        }
-      }
-    });
-    this.setState({ results: [...results] });
+    let results = groupBySection(response.results);
+    this.setState({ 
+      results: [...results],
+      currentPage: response.currentPage,
+      allPages: response.pages,
+      total: response.total
+     });
   })
   .catch( error => {
     console.log(error);
@@ -79,7 +133,12 @@ class App extends Component {
 
   render() {
     const { classes } = this.props;
-    const { results } = this.state;
+    const { 
+      results,
+      currentPage,
+      allPages,
+      total
+     } = this.state;
     return (
       <div className="App">
         <header className="App-header">
@@ -88,20 +147,30 @@ class App extends Component {
           required
           id="standard-required"
           label="Required"
-          defaultValue="Hello World"
           className={classes.textField}
           margin="normal"
+          value={this.state.userTypes} 
+          onChange={this.handleUserTypes}
         />
         <Button variant="contained" color="primary" className={classes.button}>
          Clear
       </Button>
-      <Button variant="contained" color="primary" className={classes.button}>
+      <Button 
+          variant="contained" 
+          color="primary" 
+          className={classes.button}
+          onClick={this.handleSearch}
+          >
       Search
       </Button>
        <CheckboxList results={results}/>
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
+       <Pagination 
+       currentPage={currentPage}
+       allPages={allPages}
+       total={total}
+       handlePage={this.handlePage}
+       //handlePageDown={this.handlePageDown}
+       />
           <a
             className="App-link"
             href="https://reactjs.org"
