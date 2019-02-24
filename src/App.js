@@ -22,39 +22,39 @@ const styles = theme => ({
 });
 
 function groupBySection(data) {
-  let results=[];
+  let results = [];
   let section = {};
-  data.map( item => {
-    if(!section[item.sectionId])//if section id is not found in section group, insert it
-    { 
+  data.map(item => {
+    if (!section[item.sectionId])//if section id is not found in section group, insert it
+    {
       section[item.sectionId] = item.sectionId;
       results.push(
         {
           id: item.id,
-          title: item.webTitle, 
-          link: item.webUrl, 
+          title: item.webTitle,
+          link: item.webUrl,
           date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
-          section: item.sectionId  
+          section: item.sectionId
         }
-        );
+      );
     }
     else //if section id already existing, find the position of new item by comparing section id
     {
-      for(let i = 0; i < results.length; i++){
-         if(results[i].section === item.sectionId){
+      for (let i = 0; i < results.length; i++) {
+        if (results[i].section === item.sectionId) {
           results.splice(
-            i+1, 
-            0, 
+            i + 1,
+            0,
             {
               id: item.id,
-              title: item.webTitle, 
-              link: item.webUrl, 
+              title: item.webTitle,
+              link: item.webUrl,
               date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
-              section: item.sectionId  
+              section: item.sectionId
             }
-            );
+          );
           break;
-         }
+        }
       }
     }
   });
@@ -66,111 +66,139 @@ class App extends Component {
     super(props);
     this.state = {
       userTypes: "",
-      results : [],
-      currentPage : 0,
-      allPages : 0,
+      results: [],
+      pinnedList: [],
+      currentPage: 0,
+      allPages: 0,
       total: 0,
     };
     this.componentDidMount = this.componentDidMount.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleUserTypes = this.handleUserTypes.bind(this);
     this.handlePage = this.handlePage.bind(this);
-    //this.handlePageDown = this.handlePageDown.bind(this);
+    this.handlePinnedList = this.handlePinnedList.bind(this);
   }
 
   handleUserTypes = event => {
     this.setState({ userTypes: event.target.value });
   };
 
+  handlePinnedList = (pinnedList) => {
+    this.setState({ pinnedList: pinnedList });
+  };
+
   handlePage = (currentPage) => {
-    if(currentPage>=1)
-    { 
+    if (currentPage >= 1) {
       axios.get(`https://content.guardianapis.com/search?page=${currentPage}&q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
-      .then( ({data : {response}}) => {
-        let results = groupBySection(response.results);
-        this.setState({ results: [...results] });
-      })
-      .catch( error => {
-        console.log(error);
-      });
+        .then(({ data: { response } }) => {
+          let results = groupBySection(response.results);
+          this.setState({
+            results: [...results],
+            currentPage: response.currentPage,
+            allPages: response.pages,
+            total: response.total,
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
     this.setState({ currentPage: currentPage });
   };
 
-  // handlePageDown = (currentPage) => {
-  //   this.setState({ currentPage: currentPage - 1 });
-  // };
-
   handleSearch = () => {
-    if (this.state.userTypes.length !== 0)
-    {
+    if (this.state.userTypes.length !== 0) {
       axios.get(`https://content.guardianapis.com/search?q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
-      .then( ({data : {response}}) => {
+        .then(({ data: { response } }) => {
+          let results = groupBySection(response.results);
+          this.setState({
+            results: [...results],
+            currentPage: response.currentPage,
+            allPages: response.pages,
+            total: response.total,
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+    else{
+      axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
+      .then(({ data: { response } }) => {
         let results = groupBySection(response.results);
-        this.setState({ results: [...results] });
+        this.setState({
+          results: [...results],
+          currentPage: response.currentPage,
+          allPages: response.pages,
+          total: response.total,
+        });
       })
-      .catch( error => {
+      .catch(error => {
         console.log(error);
       });
     }
   };
-  
+
   componentDidMount = () => {
-  axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
-  .then( ({data : {response}}) => {
-    let results = groupBySection(response.results);
-    this.setState({ 
-      results: [...results],
-      currentPage: response.currentPage,
-      allPages: response.pages,
-      total: response.total
-     });
-  })
-  .catch( error => {
-    console.log(error);
-  });
+    axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
+      .then(({ data: { response } }) => {
+        let results = groupBySection(response.results);
+        this.setState({
+          results: [...results],
+          currentPage: response.currentPage,
+          allPages: response.pages,
+          total: response.total
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   render() {
     const { classes } = this.props;
-    const { 
+    const {
       results,
       currentPage,
       allPages,
-      total
-     } = this.state;
+      total,
+      pinnedList,
+    } = this.state;
     return (
       <div className="App">
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
           <TextField
-          required
-          id="standard-required"
-          label="Required"
-          className={classes.textField}
-          margin="normal"
-          value={this.state.userTypes} 
-          onChange={this.handleUserTypes}
-        />
-        <Button variant="contained" color="primary" className={classes.button}>
-         Clear
+            required
+            id="standard-required"
+            label="Required"
+            className={classes.textField}
+            margin="normal"
+            value={this.state.userTypes}
+            onChange={this.handleUserTypes}
+          />
+          <Button variant="contained" color="primary" className={classes.button}>
+            Clear
       </Button>
-      <Button 
-          variant="contained" 
-          color="primary" 
-          className={classes.button}
-          onClick={this.handleSearch}
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={this.handleSearch}
           >
-      Search
+            Search
       </Button>
-       <CheckboxList results={results}/>
-       <Pagination 
-       currentPage={currentPage}
-       allPages={allPages}
-       total={total}
-       handlePage={this.handlePage}
-       //handlePageDown={this.handlePageDown}
-       />
+          <CheckboxList
+            results={results}
+            pinnedList={pinnedList}
+            handlePinnedList={this.handlePinnedList}
+          />
+          <Pagination
+            currentPage={currentPage}
+            allPages={allPages}
+            total={total}
+            handlePage={this.handlePage}
+          />
           <a
             className="App-link"
             href="https://reactjs.org"
@@ -179,7 +207,6 @@ class App extends Component {
           >
             Learn React
           </a>
-         
         </header>
       </div>
     );

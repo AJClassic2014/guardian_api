@@ -29,25 +29,28 @@ class CheckboxList extends React.Component {
       }
 
   handleToggle = value => () => {
-    const { checked } = this.state;
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+    //const { checked } = this.state;
+    const { pinnedList, handlePinnedList } = this.props;
+    const currentIndex = pinnedList.indexOf(value);
+    const newList = [...pinnedList];
 
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newList.push(value);
     } else {
-      newChecked.splice(currentIndex, 1);
+      newList.splice(currentIndex, 1);
     }
-
+    handlePinnedList(newList);
     this.setState({
-      checked: newChecked,
+      checked: newList,
     });
+    console.log(newList);
   };
 
   render() {
     const { 
         classes,
         results,
+        pinnedList,
      } = this.props;
 
     return (
@@ -73,6 +76,34 @@ class CheckboxList extends React.Component {
             </ListItemSecondaryAction>
           </ListItem>
         ))}
+        {
+           <ListItem>
+           <ListItemText primary="Pinned Items" />
+         </ListItem>
+        }
+        {
+          pinnedList.map(pinnedItem => (
+            <ListItem key={pinnedItem.id} button>
+            <ListItemText
+            primary={pinnedItem.title}
+          secondary={
+            <React.Fragment>
+              <Typography component="span" color="textPrimary">
+                {pinnedItem.date}   {pinnedItem.section}
+              </Typography>
+              {pinnedItem.link}
+            </React.Fragment>
+          }/>
+            <ListItemSecondaryAction>
+              <Checkbox
+                onChange={this.handleToggle(pinnedItem)}
+                checked={this.state.checked.indexOf(pinnedItem) !== -1}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
+          )
+          )
+        }
       </List>
     );
   }
