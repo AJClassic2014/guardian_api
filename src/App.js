@@ -10,9 +10,9 @@ import inputProcess from "./InputProcess";
 import guardianApi from "./GuardianApi";
 import Pagination from "./Pagination";
 import NoResults from "./NoResults";
+import errorCatch from "./ErrorCatch";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
-import axios from "axios";
 
 const styles = theme => ({
   textField: {
@@ -65,14 +65,8 @@ class App extends Component {
 
   handlePage = (currentPage) => {
     if (currentPage >= 1) {
-      //axios.get(`https://content.guardianapis.com/search?page=${currentPage}&q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
       guardianApi( this.state.userTypes , currentPage )  
       .then(({ data: { response } }) => {
-          if(response.status==="error") 
-          { 
-            this.setState({ error: response.message });
-            throw Error;
-          }
           let results = groupBySection(response.results);
           this.setState({
             results: [...results],
@@ -85,22 +79,16 @@ class App extends Component {
         })
         .catch(error => {
           console.log(error);
+          this.setState({ error: error.message });
         });
     }
     this.setState({ currentPage: currentPage });
   };
 
   handleSearch = () => {
-    //if (this.state.userTypes.length !== 0) {
       console.log("test "+inputProcess(this.state.userTypes));
-      //axios.get(`https://content.guardianapis.com/search?q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
       guardianApi( this.state.userTypes , this.state.currentPage )    
       .then(({ data: { response } }) => {
-          if(response.status==="error") 
-          { 
-            this.setState({ error: response.message });
-            throw Error;
-          }
           let results = groupBySection(response.results);
           this.setState({
             results: [...results],
@@ -113,41 +101,13 @@ class App extends Component {
         })
         .catch(error => {
           console.log(error);
+          this.setState({ error: error.message });
         });
-    //}
-    // else{
-    //   axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
-    //   .then(({ data: { response } }) => {
-    //     if(response.status==="error") 
-    //       { 
-    //         this.setState({ error: response.message });
-    //         throw Error;
-    //       }
-    //     let results = groupBySection(response.results);
-    //     this.setState({
-    //       results: [...results],
-    //       currentPage: response.currentPage,
-    //       allPages: response.pages,
-    //       total: response.total,
-    //       loading: false,
-    //       error: "",
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-    // }
   };
 
   componentDidMount = () => {
-    //axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
     guardianApi( this.state.userTypes , this.state.currentPage )  
       .then(({ data: { response } }) => {
-        if(response.status==="error") 
-          { 
-            this.setState({ error: response.message });
-            throw Error;
-          }
         let results = groupBySection(response.results);
         this.setState({
           results: [...results],
@@ -160,6 +120,7 @@ class App extends Component {
       })
       .catch(error => {
         console.log(error);
+        this.setState({ error: error.message });
       });
   };
 
@@ -198,7 +159,7 @@ class App extends Component {
       </Button>
       </div>
       {loading && <LoadingPage/>}
-      {results.length !== 0 && <div className="resultList">
+      {(results.length !== 0 && error.length ===0) && <div className="resultList">
           <CheckboxList
             results={results}
             pinnedList={pinnedList}
@@ -212,7 +173,7 @@ class App extends Component {
           />
           </div>}
         {(loading === false && results.length === 0) && <NoResults/>}
-        {error.length !==0 &&<ErrorPage/>} 
+        {error.length !==0 &&<ErrorPage error={error}/>} 
           <a
             className="App-link"
             href="https://reactjs.org"
