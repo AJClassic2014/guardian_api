@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-//import logo from './logo.svg';
 import slogan from './slogan.svg';
 import './App.css';
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import CheckboxList from "./CheckboxList";
+import groupBySection from "./GroupBySection";
+import inputProcess from "./InputProcess";
+import guardianApi from "./GuardianApi";
 import Pagination from "./Pagination";
+import NoResults from "./NoResults";
+import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 import axios from "axios";
-import * as moment from 'moment';
 
 const styles = theme => ({
   textField: {
@@ -31,50 +35,12 @@ const styles = theme => ({
   }
 });
 
-function groupBySection(data) {
-  let results = [];
-  let section = {};
-  data.map(item => {
-    if (!section[item.sectionId])//if section id is not found in section group, insert it
-    {
-      section[item.sectionId] = item.sectionId;
-      results.push(
-        {
-          id: item.id,
-          title: item.webTitle,
-          link: item.webUrl,
-          date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
-          section: item.sectionId
-        }
-      );
-    }
-    else //if section id already existing, find the position of new item by comparing section id
-    {
-      for (let i = 0; i < results.length; i++) {
-        if (results[i].section === item.sectionId) {
-          results.splice(
-            i + 1,
-            0,
-            {
-              id: item.id,
-              title: item.webTitle,
-              link: item.webUrl,
-              date: moment(item.webPublicationDate).format('DD/MM/YYYY'),
-              section: item.sectionId
-            }
-          );
-          break;
-        }
-      }
-    }
-  });
-  return results;
-}
-
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
+      error:"",
       userTypes: "",
       results: [],
       pinnedList: [],
@@ -99,14 +65,22 @@ class App extends Component {
 
   handlePage = (currentPage) => {
     if (currentPage >= 1) {
-      axios.get(`https://content.guardianapis.com/search?page=${currentPage}&q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
-        .then(({ data: { response } }) => {
+      //axios.get(`https://content.guardianapis.com/search?page=${currentPage}&q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
+      guardianApi( this.state.userTypes , currentPage )  
+      .then(({ data: { response } }) => {
+          if(response.status==="error") 
+          { 
+            this.setState({ error: response.message });
+            throw Error;
+          }
           let results = groupBySection(response.results);
           this.setState({
             results: [...results],
             currentPage: response.currentPage,
             allPages: response.pages,
             total: response.total,
+            loading: false,
+            error: "",
           });
         })
         .catch(error => {
@@ -117,47 +91,71 @@ class App extends Component {
   };
 
   handleSearch = () => {
-    if (this.state.userTypes.length !== 0) {
-      axios.get(`https://content.guardianapis.com/search?q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
-        .then(({ data: { response } }) => {
+    //if (this.state.userTypes.length !== 0) {
+      console.log("test "+inputProcess(this.state.userTypes));
+      //axios.get(`https://content.guardianapis.com/search?q=${this.state.userTypes}&api-key=cc56c111-e5a6-4922-92b8-181826199202`)
+      guardianApi( this.state.userTypes , this.state.currentPage )    
+      .then(({ data: { response } }) => {
+          if(response.status==="error") 
+          { 
+            this.setState({ error: response.message });
+            throw Error;
+          }
           let results = groupBySection(response.results);
           this.setState({
             results: [...results],
             currentPage: response.currentPage,
             allPages: response.pages,
             total: response.total,
+            loading: false,
+            error: "",
           });
         })
         .catch(error => {
           console.log(error);
         });
-    }
-    else{
-      axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
+    //}
+    // else{
+    //   axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
+    //   .then(({ data: { response } }) => {
+    //     if(response.status==="error") 
+    //       { 
+    //         this.setState({ error: response.message });
+    //         throw Error;
+    //       }
+    //     let results = groupBySection(response.results);
+    //     this.setState({
+    //       results: [...results],
+    //       currentPage: response.currentPage,
+    //       allPages: response.pages,
+    //       total: response.total,
+    //       loading: false,
+    //       error: "",
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
+    // }
+  };
+
+  componentDidMount = () => {
+    //axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
+    guardianApi( this.state.userTypes , this.state.currentPage )  
       .then(({ data: { response } }) => {
+        if(response.status==="error") 
+          { 
+            this.setState({ error: response.message });
+            throw Error;
+          }
         let results = groupBySection(response.results);
         this.setState({
           results: [...results],
           currentPage: response.currentPage,
           allPages: response.pages,
           total: response.total,
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    }
-  };
-
-  componentDidMount = () => {
-    axios.get('https://content.guardianapis.com/search?api-key=cc56c111-e5a6-4922-92b8-181826199202')
-      .then(({ data: { response } }) => {
-        let results = groupBySection(response.results);
-        this.setState({
-          results: [...results],
-          currentPage: response.currentPage,
-          allPages: response.pages,
-          total: response.total
+          loading: false,
+          error: "",
         });
       })
       .catch(error => {
@@ -173,6 +171,8 @@ class App extends Component {
       allPages,
       total,
       pinnedList,
+      loading,
+      error,
     } = this.state;
     return (
       <div className="App">
@@ -197,7 +197,8 @@ class App extends Component {
             Search
       </Button>
       </div>
-      <div className="resultList">
+      {loading && <LoadingPage/>}
+      {results.length !== 0 && <div className="resultList">
           <CheckboxList
             results={results}
             pinnedList={pinnedList}
@@ -209,7 +210,9 @@ class App extends Component {
             total={total}
             handlePage={this.handlePage}
           />
-        </div>
+          </div>}
+        {(loading === false && results.length === 0) && <NoResults/>}
+        {error.length !==0 &&<ErrorPage/>} 
           <a
             className="App-link"
             href="https://reactjs.org"
