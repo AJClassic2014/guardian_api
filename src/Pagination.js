@@ -61,7 +61,7 @@ class Pagination extends React.Component {
                              onClick={() => this.setPage(currentPage - 1)}
                              disabled={currentPage <= 1}
                              >
-                                        Prev
+                                      Prev 
                             </Button>
                         }
                         
@@ -75,7 +75,7 @@ class Pagination extends React.Component {
                             onClick={() => this.setPage(currentPage + 1)}
                             disabled={currentPage === allPages}
                             >
-                                        Next
+                                        Next 
                             </Button>
                         }
                     </div>

@@ -17,6 +17,27 @@ const styles = theme => ({
   inline: {
     display: 'inline',
   },
+  title: {
+    fontSize: '1rem',
+    fontWeight:550,
+  },
+  section: {
+    color: '#ff6600',
+  },
+  pinned: {
+    backgroundColor: '#70c5ca85',
+  },
+  pinnedBar: {
+    fontSize: '1rem',
+    fontWeight:550,
+    backgroundColor: '#ed8836a3',
+  },
+  pinnedTitle: {
+    fontSize: '1rem',
+    fontWeight:550,
+    color: 'white',
+  },
+
 });
 
 class CheckboxList extends React.Component {
@@ -59,11 +80,18 @@ class CheckboxList extends React.Component {
           <ListItem key={value.id} button>
             {/* <ListItemText primary={`Line item ${value + 1}`} /> */}
             <ListItemText
-            primary={value.title}
+            primary={
+              <Typography 
+              className={classes.title}
+              color="textPrimary">
+             {value.title}
+             </Typography>
+
+            }
           secondary={
             <React.Fragment>
               <Typography component="span" color="textPrimary">
-                {value.date}   {value.section}
+                Published: {value.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {value.section}
               </Typography>
               {value.link}
             </React.Fragment>
@@ -76,20 +104,32 @@ class CheckboxList extends React.Component {
             </ListItemSecondaryAction>
           </ListItem>
         ))}
-        {
+        {/* {
            <ListItem>
-           <ListItemText primary="Pinned Items" />
+           <ListItemText primary={
+              <Typography 
+              className={classes.pinnedTitle}
+              color="textPrimary">
+               Pinned Items
+             </Typography>
+           } 
+           className={classes.pinnedBar}/>
          </ListItem>
-        }
+        } */}
+        <div className={classes.pinnedBar}><span className={classes.pinnedTitle}>Pinned Items</span></div>
         {
           pinnedList.map(pinnedItem => (
-            <ListItem key={pinnedItem.id} button>
+            <ListItem className={classes.pinned} key={pinnedItem.id} button>
             <ListItemText
-            primary={pinnedItem.title}
+            primary={
+              <Typography className={classes.title} color="textPrimary">
+              {pinnedItem.title}
+              </Typography> 
+            }
           secondary={
             <React.Fragment>
               <Typography component="span" color="textPrimary">
-                {pinnedItem.date}   {pinnedItem.section}
+                     {pinnedItem.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {pinnedItem.section}
               </Typography>
               {pinnedItem.link}
             </React.Fragment>

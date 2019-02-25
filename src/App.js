@@ -13,12 +13,17 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 400,
+    width: 500,
   },
   button: {
     margin: theme.spacing.unit,
-    width: 100,
+    marginTop: '13px',
+    width: 110,
   },
+  inputHeight: {
+    height: 4,
+    fontSize: "1em"
+  }
 });
 
 function groupBySection(data) {
@@ -166,20 +171,18 @@ class App extends Component {
     } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
+        <div className="Container">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
+          <div className="searchField">
           <TextField
-            required
-            id="standard-required"
-            label="Required"
+            id="outlined-name"
             className={classes.textField}
             margin="normal"
             value={this.state.userTypes}
             onChange={this.handleUserTypes}
+            variant="outlined"
+            InputProps={{ classes: { input: this.props.classes.inputHeight } }}
           />
-          <Button variant="contained" color="primary" className={classes.button}>
-            Clear
-      </Button>
           <Button
             variant="contained"
             color="primary"
@@ -188,6 +191,8 @@ class App extends Component {
           >
             Search
       </Button>
+      </div>
+      <div className="resultList">
           <CheckboxList
             results={results}
             pinnedList={pinnedList}
@@ -199,6 +204,7 @@ class App extends Component {
             total={total}
             handlePage={this.handlePage}
           />
+          </div>
           <a
             className="App-link"
             href="https://reactjs.org"
@@ -207,7 +213,7 @@ class App extends Component {
           >
             Learn React
           </a>
-        </header>
+        </div>
       </div>
     );
   }
