@@ -14,10 +14,17 @@ const styles = theme => ({
     grow: {
       flexGrow: 1,
     },
-    menuButton: {
-      marginLeft: -12,
-      marginRight: 20,
+    menuLeft: {   
+      color: '#000000',
+      fontSize: '1rem',
+      fontWeight:550,
     },
+    menuRight: {   
+        marginLeft: '14%',
+        color: '#000000',
+        fontSize: '1rem',
+        fontWeight:550,
+      },
     
   });
  
@@ -48,15 +55,17 @@ class Pagination extends React.Component {
         return (
             allPages > 1 &&
             <Toolbar className={classes.root}>
-                    <div style={{color: 'black'}}>
+                    <div className={classes.menuLeft}>
                         {
                             `${(currentPage - 1) * 10 + 1}-${currentPage * 10 > total?total:currentPage * 10} of ${total}`
                         }
                     </div>
-                    <div style={{marginLeft: '200px', color: 'black'}}>
+                    <div className={classes.menuRight}>
+                        
                         {
                             <Button 
                              size="small" 
+                             variant="contained"
                              className={classes.margin}  
                              onClick={() => this.setPage(currentPage - 1)}
                              disabled={currentPage <= 1}
@@ -71,6 +80,7 @@ class Pagination extends React.Component {
                         {
                             <Button 
                             size="small" 
+                            variant="contained"
                             className={classes.margin}  
                             onClick={() => this.setPage(currentPage + 1)}
                             disabled={currentPage === allPages}

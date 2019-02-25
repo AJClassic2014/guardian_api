@@ -104,19 +104,11 @@ class CheckboxList extends React.Component {
             </ListItemSecondaryAction>
           </ListItem>
         ))}
-        {/* {
-           <ListItem>
-           <ListItemText primary={
-              <Typography 
-              className={classes.pinnedTitle}
-              color="textPrimary">
-               Pinned Items
-             </Typography>
-           } 
-           className={classes.pinnedBar}/>
-         </ListItem>
-        } */}
-        <div className={classes.pinnedBar}><span className={classes.pinnedTitle}>Pinned Items</span></div>
+        <div className={classes.pinnedBar}>
+        <span className={classes.pinnedTitle}>
+        Pinned Items
+        </span>
+        </div>
         {
           pinnedList.map(pinnedItem => (
             <ListItem className={classes.pinned} key={pinnedItem.id} button>

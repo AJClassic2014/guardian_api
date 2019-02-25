@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  margin-top: 7%;
 }
 
 /* .App-logo {
@@ -20,13 +21,21 @@
 }
 
 .searchField{
+  margin-top: 10px;
   display: flex;
   flex-flow: row;
   align-items: center;
   justify-content: center;
 }
+
+.resultList{
+  margin-top: 10px;
+}
+
 .App-link {
+  margin-top: 10px;
   color: #61dafb;
+  margin-bottom: 30px;
 }
 
 /* @keyframes App-logo-spin {

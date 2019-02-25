@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
+import slogan from './slogan.svg';
 import './App.css';
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
@@ -23,6 +24,10 @@ const styles = theme => ({
   inputHeight: {
     height: 4,
     fontSize: "1em"
+  },
+  slogan: {
+    width: '20%',
+    backgroundColor: '#0d7cad',
   }
 });
 
@@ -172,7 +177,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="Container">
-          {/* <img src={logo} className="App-logo" alt="logo" /> */}
+          <img src={slogan} className={classes.slogan}  alt="logo" />
           <div className="searchField">
           <TextField
             id="outlined-name"
@@ -204,14 +209,14 @@ class App extends Component {
             total={total}
             handlePage={this.handlePage}
           />
-          </div>
+        </div>
           <a
             className="App-link"
             href="https://reactjs.org"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn React
+            Learn Source code
           </a>
         </div>
       </div>
