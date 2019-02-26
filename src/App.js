@@ -1,32 +1,17 @@
 import React, { Component } from 'react';
-import slogan from './slogan.svg';
+import slogan from './assets/slogan.svg';
 import './App.css';
-import Button from "@material-ui/core/Button";
-import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
-import groupBySection from "./GroupBySection";
-import guardianApi from "./GuardianApi";
-import NoResults from "./NoResults";
-import ResultList from "./ResultList";
-//import errorCatch from "./ErrorCatch";
-import LoadingPage from "./LoadingPage";
-import ErrorPage from "./ErrorPage";
+import groupBySection from "./functions/GroupBySection";
+import guardianApi from "./functions/GuardianApi";
+import SearchField from "./components/SearchField";
+import NoResults from "./components/NoResults";
+import ResultList from "./components/ResultList";
+//import errorCatch from "./functions/ErrorCatch";
+import LoadingPage from "./components/LoadingPage";
+import ErrorPage from "./components/ErrorPage";
 
 const styles = theme => ({
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 500,
-  },
-  button: {
-    margin: theme.spacing.unit,
-    marginTop: '13px',
-    width: 110,
-  },
-  inputHeight: {
-    height: 4,
-    fontSize: "1em"
-  },
   slogan: {
     width: '20%',
     backgroundColor: '#0d7cad',
@@ -54,8 +39,8 @@ class App extends Component {
     this.getResultList = this.getResultList.bind(this);
   }
 
-  handleUserTypes = event => {
-    this.setState({ userTypes: event.target.value });
+  handleUserTypes = (userTypes) => {
+    this.setState({ userTypes: userTypes });
   };
 
   handlePinnedList = (pinnedList) => {
@@ -107,25 +92,11 @@ class App extends Component {
       <div className="App">
         <div className="Container">
           <img src={slogan} className={classes.slogan} alt="logo" />
-          <div className="searchField">
-            <TextField
-              id="outlined-name"
-              className={classes.textField}
-              margin="normal"
-              value={this.state.userTypes}
-              onChange={this.handleUserTypes}
-              variant="outlined"
-              InputProps={{ classes: { input: this.props.classes.inputHeight } }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={this.handleSearch}
-            >
-              Search
-            </Button>
-          </div>
+          <SearchField
+            userTypes={this.state.userTypes}
+            handleSearch={this.handleSearch}
+            handleUserTypes={this.handleUserTypes}
+          />
           {loading && <LoadingPage />}
           {(results.length !== 0 && error.length === 0) &&
             <ResultList

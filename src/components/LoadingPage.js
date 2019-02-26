@@ -1,6 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from '../assets/logo.svg';
+import '../App.css';
 
 const LoadingPage = () => (
   <div style={{ color: '#000000', textAlign: 'center' }}>
