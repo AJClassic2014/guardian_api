@@ -10,7 +10,7 @@ import inputProcess from "./InputProcess";
 import guardianApi from "./GuardianApi";
 import Pagination from "./Pagination";
 import NoResults from "./NoResults";
-import errorCatch from "./ErrorCatch";
+//import errorCatch from "./ErrorCatch";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
 
@@ -53,6 +53,7 @@ class App extends Component {
     this.handleUserTypes = this.handleUserTypes.bind(this);
     this.handlePage = this.handlePage.bind(this);
     this.handlePinnedList = this.handlePinnedList.bind(this);
+    this.getResultList = this.getResultList.bind(this);
   }
 
   handleUserTypes = event => {
@@ -63,51 +64,9 @@ class App extends Component {
     this.setState({ pinnedList: pinnedList });
   };
 
-  handlePage = (currentPage) => {
-    if (currentPage >= 1) {
-      guardianApi( this.state.userTypes , currentPage )  
-      .then(({ data: { response } }) => {
-          let results = groupBySection(response.results);
-          this.setState({
-            results: [...results],
-            currentPage: response.currentPage,
-            allPages: response.pages,
-            total: response.total,
-            loading: false,
-            error: "",
-          });
-        })
-        .catch(error => {
-          console.log(error);
-          this.setState({ error: error.message });
-        });
-    }
-    this.setState({ currentPage: currentPage });
-  };
-
-  handleSearch = () => {
-      console.log("test "+inputProcess(this.state.userTypes));
-      guardianApi( this.state.userTypes , this.state.currentPage )    
-      .then(({ data: { response } }) => {
-          let results = groupBySection(response.results);
-          this.setState({
-            results: [...results],
-            currentPage: response.currentPage,
-            allPages: response.pages,
-            total: response.total,
-            loading: false,
-            error: "",
-          });
-        })
-        .catch(error => {
-          console.log(error);
-          this.setState({ error: error.message });
-        });
-  };
-
-  componentDidMount = () => {
-    guardianApi( this.state.userTypes , this.state.currentPage )  
-      .then(({ data: { response } }) => {
+  getResultList = (input, page) => {
+    guardianApi( input , page )    
+    .then(({ data: { response } }) => {
         let results = groupBySection(response.results);
         this.setState({
           results: [...results],
@@ -122,6 +81,70 @@ class App extends Component {
         console.log(error);
         this.setState({ error: error.message });
       });
+}
+
+  handlePage = (currentPage) => {
+    if (currentPage >= 1) {
+      // guardianApi( this.state.userTypes , currentPage )  
+      // .then(({ data: { response } }) => {
+      //     let results = groupBySection(response.results);
+      //     this.setState({
+      //       results: [...results],
+      //       currentPage: response.currentPage,
+      //       allPages: response.pages,
+      //       total: response.total,
+      //       loading: false,
+      //       error: "",
+      //     });
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //     this.setState({ error: error.message });
+      //   });
+        this.getResultList( this.state.userTypes, currentPage );
+    }
+  };
+
+  handleSearch = () => {
+      console.log("test "+inputProcess(this.state.userTypes));
+      // guardianApi( this.state.userTypes , this.state.currentPage )    
+      // .then(({ data: { response } }) => {
+      //     let results = groupBySection(response.results);
+      //     this.setState({
+      //       results: [...results],
+      //       currentPage: response.currentPage,
+      //       allPages: response.pages,
+      //       total: response.total,
+      //       loading: false,
+      //       error: "",
+      //     });
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //     this.setState({ error: error.message });
+      //   });
+
+        this.getResultList( this.state.userTypes, 1 );
+  };
+
+  componentDidMount = () => {
+    // guardianApi( this.state.userTypes , this.state.currentPage )  
+    //   .then(({ data: { response } }) => {
+    //     let results = groupBySection(response.results);
+    //     this.setState({
+    //       results: [...results],
+    //       currentPage: response.currentPage,
+    //       allPages: response.pages,
+    //       total: response.total,
+    //       loading: false,
+    //       error: "",
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //     this.setState({ error: error.message });
+    //   });
+      this.getResultList( this.state.userTypes, this.state.currentPage );
   };
 
   render() {
