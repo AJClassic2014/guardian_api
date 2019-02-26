@@ -4,12 +4,10 @@ import './App.css';
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
-import CheckboxList from "./CheckboxList";
 import groupBySection from "./GroupBySection";
-import inputProcess from "./InputProcess";
 import guardianApi from "./GuardianApi";
-import Pagination from "./Pagination";
 import NoResults from "./NoResults";
+import ResultList from "./ResultList";
 //import errorCatch from "./ErrorCatch";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
@@ -40,7 +38,7 @@ class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      error:"",
+      error: "",
       userTypes: "",
       results: [],
       pinnedList: [],
@@ -65,8 +63,8 @@ class App extends Component {
   };
 
   getResultList = (input, page) => {
-    guardianApi( input , page )    
-    .then(({ data: { response } }) => {
+    guardianApi(input, page)
+      .then(({ data: { response } }) => {
         let results = groupBySection(response.results);
         this.setState({
           results: [...results],
@@ -81,122 +79,64 @@ class App extends Component {
         console.log(error);
         this.setState({ error: error.message });
       });
-}
+  }
 
   handlePage = (currentPage) => {
     if (currentPage >= 1) {
-      // guardianApi( this.state.userTypes , currentPage )  
-      // .then(({ data: { response } }) => {
-      //     let results = groupBySection(response.results);
-      //     this.setState({
-      //       results: [...results],
-      //       currentPage: response.currentPage,
-      //       allPages: response.pages,
-      //       total: response.total,
-      //       loading: false,
-      //       error: "",
-      //     });
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //     this.setState({ error: error.message });
-      //   });
-        this.getResultList( this.state.userTypes, currentPage );
+      this.getResultList(this.state.userTypes, currentPage);
     }
   };
 
   handleSearch = () => {
-      console.log("test "+inputProcess(this.state.userTypes));
-      // guardianApi( this.state.userTypes , this.state.currentPage )    
-      // .then(({ data: { response } }) => {
-      //     let results = groupBySection(response.results);
-      //     this.setState({
-      //       results: [...results],
-      //       currentPage: response.currentPage,
-      //       allPages: response.pages,
-      //       total: response.total,
-      //       loading: false,
-      //       error: "",
-      //     });
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //     this.setState({ error: error.message });
-      //   });
-
-        this.getResultList( this.state.userTypes, 1 );
+    this.getResultList(this.state.userTypes, 1);
   };
 
   componentDidMount = () => {
-    // guardianApi( this.state.userTypes , this.state.currentPage )  
-    //   .then(({ data: { response } }) => {
-    //     let results = groupBySection(response.results);
-    //     this.setState({
-    //       results: [...results],
-    //       currentPage: response.currentPage,
-    //       allPages: response.pages,
-    //       total: response.total,
-    //       loading: false,
-    //       error: "",
-    //     });
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //     this.setState({ error: error.message });
-    //   });
-      this.getResultList( this.state.userTypes, this.state.currentPage );
+    this.getResultList(this.state.userTypes, this.state.currentPage);
   };
 
   render() {
     const { classes } = this.props;
     const {
       results,
-      currentPage,
-      allPages,
-      total,
-      pinnedList,
       loading,
       error,
+      ...rest
     } = this.state;
     return (
       <div className="App">
         <div className="Container">
-          <img src={slogan} className={classes.slogan}  alt="logo" />
+          <img src={slogan} className={classes.slogan} alt="logo" />
           <div className="searchField">
-          <TextField
-            id="outlined-name"
-            className={classes.textField}
-            margin="normal"
-            value={this.state.userTypes}
-            onChange={this.handleUserTypes}
-            variant="outlined"
-            InputProps={{ classes: { input: this.props.classes.inputHeight } }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={this.handleSearch}
-          >
-            Search
-      </Button>
-      </div>
-      {loading && <LoadingPage/>}
-      {(results.length !== 0 && error.length ===0) && <div className="resultList">
-          <CheckboxList
-            results={results}
-            pinnedList={pinnedList}
-            handlePinnedList={this.handlePinnedList}
-          />
-          <Pagination
-            currentPage={currentPage}
-            allPages={allPages}
-            total={total}
-            handlePage={this.handlePage}
-          />
-          </div>}
-        {(loading === false && results.length === 0) && <NoResults/>}
-        {error.length !==0 &&<ErrorPage error={error}/>} 
+            <TextField
+              id="outlined-name"
+              className={classes.textField}
+              margin="normal"
+              value={this.state.userTypes}
+              onChange={this.handleUserTypes}
+              variant="outlined"
+              InputProps={{ classes: { input: this.props.classes.inputHeight } }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={this.handleSearch}
+            >
+              Search
+            </Button>
+          </div>
+          {loading && <LoadingPage />}
+          {(results.length !== 0 && error.length === 0) &&
+            <ResultList
+              results={results}
+              {...rest}
+              handlePage={this.handlePage}
+              handlePinnedList={this.handlePinnedList}
+            />
+          }
+          {(loading === false && results.length === 0) && <NoResults />}
+          {error.length !== 0 && <ErrorPage error={error} />}
           <a
             className="App-link"
             href="https://reactjs.org"

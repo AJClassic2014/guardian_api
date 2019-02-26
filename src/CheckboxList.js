@@ -19,7 +19,7 @@ const styles = theme => ({
   },
   title: {
     fontSize: '1rem',
-    fontWeight:550,
+    fontWeight: 550,
   },
   section: {
     color: '#ff6600',
@@ -29,28 +29,26 @@ const styles = theme => ({
   },
   pinnedBar: {
     fontSize: '1rem',
-    fontWeight:550,
+    fontWeight: 550,
     backgroundColor: '#ed8836a3',
   },
   pinnedTitle: {
     fontSize: '1rem',
-    fontWeight:550,
+    fontWeight: 550,
     color: 'white',
   },
 
 });
 
 class CheckboxList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            checked: [1],
-        };
-       
-      }
+  constructor(props) {
+    super(props);
+    this.state = {
+      checked: [1],
+    };
+  }
 
   handleToggle = value => () => {
-    //const { checked } = this.state;
     const { pinnedList, handlePinnedList } = this.props;
     const currentIndex = pinnedList.indexOf(value);
     const newList = [...pinnedList];
@@ -68,34 +66,33 @@ class CheckboxList extends React.Component {
   };
 
   render() {
-    const { 
-        classes,
-        results,
-        pinnedList,
-     } = this.props;
-
+    const {
+      classes,
+      results,
+      pinnedList,
+    } = this.props;
     return (
       <List dense className={classes.root}>
         {results.map(value => (
           <ListItem key={value.id} button>
             {/* <ListItemText primary={`Line item ${value + 1}`} /> */}
             <ListItemText
-            primary={
-              <Typography 
-              className={classes.title}
-              color="textPrimary">
-             {value.title}
-             </Typography>
+              primary={
+                <Typography
+                  className={classes.title}
+                  color="textPrimary">
+                  {value.title}
+                </Typography>
 
-            }
-          secondary={
-            <React.Fragment>
-              <Typography component="span" color="textPrimary">
-                Published: {value.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {value.section}
-              </Typography>
-              {value.link}
-            </React.Fragment>
-          }/>
+              }
+              secondary={
+                <React.Fragment>
+                  <Typography component="span" color="textPrimary">
+                    Published: {value.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {value.section}
+                  </Typography>
+                  {value.link}
+                </React.Fragment>
+              } />
             <ListItemSecondaryAction>
               <Checkbox
                 onChange={this.handleToggle(value)}
@@ -105,34 +102,34 @@ class CheckboxList extends React.Component {
           </ListItem>
         ))}
         <div className={classes.pinnedBar}>
-        <span className={classes.pinnedTitle}>
-        Pinned Items
+          <span className={classes.pinnedTitle}>
+            Pinned Items
         </span>
         </div>
         {
           pinnedList.map(pinnedItem => (
             <ListItem className={classes.pinned} key={pinnedItem.id} button>
-            <ListItemText
-            primary={
-              <Typography className={classes.title} color="textPrimary">
-              {pinnedItem.title}
-              </Typography> 
-            }
-          secondary={
-            <React.Fragment>
-              <Typography component="span" color="textPrimary">
-                     {pinnedItem.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {pinnedItem.section}
-              </Typography>
-              {pinnedItem.link}
-            </React.Fragment>
-          }/>
-            <ListItemSecondaryAction>
-              <Checkbox
-                onChange={this.handleToggle(pinnedItem)}
-                checked={this.state.checked.indexOf(pinnedItem) !== -1}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
+              <ListItemText
+                primary={
+                  <Typography className={classes.title} color="textPrimary">
+                    {pinnedItem.title}
+                  </Typography>
+                }
+                secondary={
+                  <React.Fragment>
+                    <Typography component="span" color="textPrimary">
+                      {pinnedItem.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {pinnedItem.section}
+                    </Typography>
+                    {pinnedItem.link}
+                  </React.Fragment>
+                } />
+              <ListItemSecondaryAction>
+                <Checkbox
+                  onChange={this.handleToggle(pinnedItem)}
+                  checked={this.state.checked.indexOf(pinnedItem) !== -1}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
           )
           )
         }
