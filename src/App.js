@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+//import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import slogan from './assets/slogan.svg';
 import './App.css';
 import { withStyles } from '@material-ui/core/styles';
@@ -10,6 +11,7 @@ import ResultList from "./components/ResultList";
 //import errorCatch from "./functions/ErrorCatch";
 import LoadingPage from "./components/LoadingPage";
 import ErrorPage from "./components/ErrorPage";
+import Footer from "./components/Footer";
 
 const styles = theme => ({
   slogan: {
@@ -48,7 +50,8 @@ class App extends Component {
   };
 
   getResultList = (input, page) => {
-    guardianApi(input, page)
+    this.setState({loading: true,}, ()=> {
+      guardianApi(input, page)
       .then(({ data: { response } }) => {
         let results = groupBySection(response.results);
         this.setState({
@@ -64,6 +67,7 @@ class App extends Component {
         console.log(error);
         this.setState({ error: error.message });
       });
+  });
   }
 
   handlePage = (currentPage) => {
@@ -97,8 +101,9 @@ class App extends Component {
             handleSearch={this.handleSearch}
             handleUserTypes={this.handleUserTypes}
           />
-          {loading && <LoadingPage />}
-          {(results.length !== 0 && error.length === 0) &&
+          {(loading && error.length === 0) && 
+            <LoadingPage />}
+          {( results.length !== 0 && error.length === 0) &&
             <ResultList
               results={results}
               {...rest}
@@ -106,16 +111,30 @@ class App extends Component {
               handlePinnedList={this.handlePinnedList}
             />
           }
-          {(loading === false && results.length === 0) && <NoResults />}
-          {error.length !== 0 && <ErrorPage error={error} />}
-          <a
+          {(loading === false && results.length === 0) 
+            && <NoResults />}
+          {error.length !== 0 && 
+          <ErrorPage error={error} />}
+          {/* <div>           
+            Developed by 
+            <a
             className="App-link"
             href="https://reactjs.org"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn Source code
+            Yinfei
           </a>
+          Learn Source code
+            <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a></div> */}
+          <Footer />
         </div>
       </div>
     );
