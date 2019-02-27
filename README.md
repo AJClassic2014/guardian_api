@@ -60,8 +60,6 @@ nothing I could get except "error.message", which includes information without r
 * As task required, pinned items appear with the search results, what if the search result is null by some key words or
 error page? Should the pinned items still appear on the page?
 
-* All the links for items are empty, so I do not direct them to the URL address
 
-* Learn source code link at the bottom of the page is not working in current as this is not the final version 
 
 

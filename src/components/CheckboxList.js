@@ -10,8 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   root: {
-    width: '100%',
-    maxWidth: 800,
+    width: 800,
     backgroundColor: theme.palette.background.paper,
   },
   inline: {
@@ -74,13 +73,13 @@ class CheckboxList extends React.Component {
     return (
       <List dense className={classes.root}>
         {results.map(value => (
-          <ListItem key={value.id} button>
+          <ListItem key={value.id}>
             <ListItemText
               primary={
                 <Typography
                   className={classes.title}
                   color="textPrimary">
-                  {value.title}
+                  <a href={value.link}>{value.title}</a>
                 </Typography>
               }
               secondary={
@@ -88,7 +87,7 @@ class CheckboxList extends React.Component {
                   <Typography component="span" color="textPrimary">
                     Published: {value.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {value.section}
                   </Typography>
-                  {value.link}
+                  <a href={value.link}>{value.link}</a>
                 </React.Fragment>
               } />
             <ListItemSecondaryAction>
@@ -106,7 +105,7 @@ class CheckboxList extends React.Component {
         </div>
         {
           pinnedList.map(pinnedItem => (
-            <ListItem className={classes.pinned} key={pinnedItem.id} button>
+            <ListItem className={classes.pinned} key={pinnedItem.id}>
               <ListItemText
                 primary={
                   <Typography className={classes.title} color="textPrimary">

@@ -29,7 +29,7 @@ const Footer = ({ classes }) => (
     Learn Source code&nbsp;
     <a
       className={classes.link}
-      href="#"
+      href="https://github.com/AJClassic2014/guardian_api/tree/deployment/v3"
       target="_blank"
       rel="noopener noreferrer"
     >
