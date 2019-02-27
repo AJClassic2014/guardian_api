@@ -36,6 +36,9 @@ const styles = theme => ({
     fontWeight: 550,
     color: 'white',
   },
+  link: {
+    textDecoration:'none',
+  }
 
 });
 
@@ -79,7 +82,7 @@ class CheckboxList extends React.Component {
                 <Typography
                   className={classes.title}
                   color="textPrimary">
-                  <a href={value.link}>{value.title}</a>
+                  <a href={value.link} className={classes.link}>{value.title}</a>
                 </Typography>
               }
               secondary={
