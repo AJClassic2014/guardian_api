@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import slogan from './assets/slogan.svg';
+import Typography from '@material-ui/core/Typography';
 import './App.css';
 import { withStyles } from '@material-ui/core/styles';
 import groupBySection from "./functions/GroupBySection";
@@ -12,8 +12,11 @@ import ErrorPage from "./components/ErrorPage";
 import Footer from "./components/Footer";
 
 const styles = () => ({
-  slogan: {
-    width: '20%',
+  title: {
+    fontSize: '2rem',
+    fontWeight: 700,
+    width: '160px',
+    color: '#FFFFFF',
     backgroundColor: '#0d7cad',
   }
 });
@@ -94,32 +97,40 @@ class App extends Component {
       loading,
       error,
     } = this.state;
+    let element = null;
+    if(loading && error.length === 0){
+      element = <LoadingPage />;
+    }
+    else if(error.length !== 0){
+      element = <ErrorPage error={error} />;
+    }
+    else if(results.length === 0){
+      element = <NoResults />;
+    }
+    else{
+      element = <ResultList
+      results={results}
+      pinnedList={pinnedList}
+      currentPage={currentPage}
+      allPages={allPages}
+      total={total} 
+      handlePage={this.handlePage}
+      handlePinnedList={this.handlePinnedList}
+    />;
+    }
     return (
       <div className="App">
         <div className="Container">
-          <img src={slogan} className={classes.slogan} alt="logo" />
+          <Typography
+            className={classes.title}>
+            Guardian API
+          </Typography>
           <SearchField
             userTypes={userTypes}
             handleSearch={this.handleSearch}
             handleUserTypes={this.handleUserTypes}
           />
-          {(loading && error.length === 0) && 
-            <LoadingPage />}
-          {( results.length !== 0 && error.length === 0) &&
-            <ResultList
-              results={results}
-              pinnedList={pinnedList}
-              currentPage={currentPage}
-              allPages={allPages}
-              total={total} 
-              handlePage={this.handlePage}
-              handlePinnedList={this.handlePinnedList}
-            />
-          }
-          {(loading === false && results.length === 0) 
-            && <NoResults />}
-          {error.length !== 0 && 
-          <ErrorPage error={error} />}
+          {element}
           <Footer />
         </div>
       </div>
