@@ -1,12 +1,26 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 
-const ErrorPage = ({ error }) => (
-  <div style={{ color: '#000000', textAlign: 'center' }}>
+const styles = () => ({
+  root: {
+    color: '#000000',
+    textAlign: 'center',
+  },
+  message: {
+    color: '#ea4335',
+  },
+});
+
+const ErrorPage = ({ 
+  classes,
+  error, 
+}) => (
+  <div className={classes.root}>
     <div>X_X</div>
-    <div>{error}</div>
-    <span style={{ color: '#ea4335' }}>System</span> is wrong,
-            <br />please <span style={{ color: '#4285f4' }}>try</span> again <span style={{ color: '#34a853' }}>later</span>
+    <div className={classes.message}>{error}</div>
+    System goes wrong,
+    please try again later
   </div>
 );
 
-export default ErrorPage;
+export default withStyles(styles)(ErrorPage);

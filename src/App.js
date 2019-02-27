@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import slogan from './assets/slogan.svg';
 import './App.css';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,12 +7,11 @@ import guardianApi from "./functions/GuardianApi";
 import SearchField from "./components/SearchField";
 import NoResults from "./components/NoResults";
 import ResultList from "./components/ResultList";
-//import errorCatch from "./functions/ErrorCatch";
 import LoadingPage from "./components/LoadingPage";
 import ErrorPage from "./components/ErrorPage";
 import Footer from "./components/Footer";
 
-const styles = theme => ({
+const styles = () => ({
   slogan: {
     width: '20%',
     backgroundColor: '#0d7cad',
@@ -87,17 +85,21 @@ class App extends Component {
   render() {
     const { classes } = this.props;
     const {
+      userTypes,
       results,
+      currentPage,
+      allPages,
+      total,
+      pinnedList,
       loading,
       error,
-      ...rest
     } = this.state;
     return (
       <div className="App">
         <div className="Container">
           <img src={slogan} className={classes.slogan} alt="logo" />
           <SearchField
-            userTypes={this.state.userTypes}
+            userTypes={userTypes}
             handleSearch={this.handleSearch}
             handleUserTypes={this.handleUserTypes}
           />
@@ -106,7 +108,10 @@ class App extends Component {
           {( results.length !== 0 && error.length === 0) &&
             <ResultList
               results={results}
-              {...rest}
+              pinnedList={pinnedList}
+              currentPage={currentPage}
+              allPages={allPages}
+              total={total} 
               handlePage={this.handlePage}
               handlePinnedList={this.handlePinnedList}
             />
@@ -115,25 +120,6 @@ class App extends Component {
             && <NoResults />}
           {error.length !== 0 && 
           <ErrorPage error={error} />}
-          {/* <div>           
-            Developed by 
-            <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Yinfei
-          </a>
-          Learn Source code
-            <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a></div> */}
           <Footer />
         </div>
       </div>

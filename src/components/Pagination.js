@@ -29,12 +29,8 @@ const styles = theme => ({
 });
 
 class Pagination extends React.Component {
-
   constructor(props) {
     super(props);
-    this.state = {
-      // page: 1
-    }
     this.setPage = this.setPage.bind(this);
   }
 
@@ -49,17 +45,14 @@ class Pagination extends React.Component {
       currentPage,
       allPages
     } = this.props;
-    // const allPages = Math.ceil(total / 10) || 1;
     return (
       allPages > 1 &&
       <Toolbar className={classes.root}>
         <div className={classes.menuLeft}>
-          {
-            `${(currentPage - 1) * 10 + 1}-${currentPage * 10 > total ? total : currentPage * 10} of ${total}`
-          }
+          {`${(currentPage - 1) * 10 + 1}-${currentPage * 10 > total ? 
+            total : currentPage * 10} of ${total}`}
         </div>
         <div className={classes.menuRight}>
-        {
             <Button
               size="small"
               variant="contained"
@@ -68,9 +61,7 @@ class Pagination extends React.Component {
               disabled={currentPage === 1}
             >
               First
-            </Button>
-          }
-          {
+            </Button>        
             <Button
               size="small"
               variant="contained"
@@ -80,12 +71,9 @@ class Pagination extends React.Component {
             >
               Prev
             </Button>
-          }
-
           {
             `Current Page：${currentPage}`
           }
-          {
             <Button
               size="small"
               variant="contained"
@@ -95,8 +83,6 @@ class Pagination extends React.Component {
             >
               Next
             </Button>
-          }
-          {
             <Button
               size="small"
               variant="contained"
@@ -106,7 +92,6 @@ class Pagination extends React.Component {
             >
               Last
             </Button>
-          }
         </div>
       </Toolbar>
     )

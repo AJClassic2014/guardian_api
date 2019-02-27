@@ -31,9 +31,6 @@ const styles = theme => ({
 class SearchField extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-     // userTypes: "",
-    }
     this.handleUserTypes = this.handleUserTypes.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
   }

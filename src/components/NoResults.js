@@ -1,10 +1,20 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 
-const NoResults = () => (
-  <div style={{ color: '#000000' }}>
-    <span style={{ color: '#ea4335' }}>No</span> results by your <span style={{ color: '#fbbc05' }}>search</span>,
-            <br />please <span style={{ color: '#4285f4' }}>try</span> other key <span style={{ color: '#34a853' }}>words</span>
+const styles = () => ({
+  root: {
+    color: '#ea4335',
+    textAlign: 'center',
+  }
+});
+
+const NoResults = ({ 
+  classes, 
+}) => (
+  <div className={classes.root}>
+    No results by your search,
+    <br />please try other key words
   </div>
 );
 
-export default NoResults;
+export default withStyles(styles)(NoResults);

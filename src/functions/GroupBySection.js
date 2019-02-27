@@ -4,7 +4,7 @@ export default (data) => {
   let results = [];
   let section = {};
   data.map(item => {
-    if (!section[item.sectionId])//if section id is not found in section group, insert it
+    if (!section[item.sectionId])
     {
       section[item.sectionId] = item.sectionId;
       results.push(
@@ -17,7 +17,7 @@ export default (data) => {
         }
       );
     }
-    else //if section id already existing, find the position of new item by comparing section id
+    else
     {
       for (let i = 0; i < results.length; i++) {
         if (results[i].section === item.sectionId) {

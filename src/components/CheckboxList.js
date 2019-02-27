@@ -75,7 +75,6 @@ class CheckboxList extends React.Component {
       <List dense className={classes.root}>
         {results.map(value => (
           <ListItem key={value.id} button>
-            {/* <ListItemText primary={`Line item ${value + 1}`} /> */}
             <ListItemText
               primary={
                 <Typography
@@ -83,7 +82,6 @@ class CheckboxList extends React.Component {
                   color="textPrimary">
                   {value.title}
                 </Typography>
-
               }
               secondary={
                 <React.Fragment>
@@ -118,7 +116,7 @@ class CheckboxList extends React.Component {
                 secondary={
                   <React.Fragment>
                     <Typography component="span" color="textPrimary">
-                      {pinnedItem.date}  &nbsp;&nbsp;   <span className={classes.section}>Section:</span> {pinnedItem.section}
+                      {pinnedItem.date}&nbsp;&nbsp;<span className={classes.section}>Section:</span> {pinnedItem.section}
                     </Typography>
                     {pinnedItem.link}
                   </React.Fragment>
